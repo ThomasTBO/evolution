@@ -3,3 +3,5 @@
 *Gemfile*
 *vendor*
 *_site*
+pyproject.toml
+uv.lock
