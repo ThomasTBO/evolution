@@ -10,10 +10,10 @@ walker = np.array([
 
 def make_env(env_name, seed=None, robot=None, **kwargs):
     if robot is None: 
-        env = gym.make(env_name)
+        env = gym.make(env_name, **kwargs)
     else:
         connections = get_full_connectivity(robot)
-        env = gym.make(env_name, body=robot)
+        env = gym.make(env_name, body=robot, connections=connections, **kwargs)
     env.robot = robot
     if seed is not None:
         env.seed(seed)
@@ -26,17 +26,23 @@ def evaluate(agent, env, max_steps=500, render=False):
     reward = 0
     steps = 0
     done = False
+    if render:
+        imgs = []
     while not done and steps < max_steps:
         if render:
-            env.render()
+            img = env.render() #mode='img'
+            imgs.append(img)
         action = agent.act(obs)
-        obs, r, done, trunc, _ = env.step(action)
+        obs, r, done, trunc,  _ = env.step(action)
         reward += r
         steps += 1
+        
+    if render:
+        return reward, imgs
     return reward
 
 def get_cfg(env_name, robot=None):
-    env = make_env(env_name, robot=walker)
+    env = make_env(env_name, robot=robot)
     cfg = {
         "n_in": env.observation_space.shape[0],
         "h_size": 32,
