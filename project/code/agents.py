@@ -1,4 +1,5 @@
 from imports import *
+from torch import sigmoid
 
 class Network(nn.Module):
     def __init__(self, n_in, h_size, n_out):
@@ -20,6 +21,7 @@ class Network(nn.Module):
         x = F.relu(x)
 
         x = self.fc3(x)
+        x = sigmoid(x)+0.6
         return x
     
 class Agent:

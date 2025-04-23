@@ -1,4 +1,5 @@
 from environnement import *
+
 def one_plus_lambda(config):
     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
     cfg = {**config, **cfg} # Merge configs
@@ -20,8 +21,9 @@ def one_plus_lambda(config):
 
         # with Pool(processes=len(population)) as pool:
             # pop_fitness = pool.starmap(mp_eval, [(a, cfg) for a in population])
-
-        pop_fitness = [evaluate(a, env, max_steps=cfg["max_steps"]) for a in population]
+        
+        pop_fitness = [evaluate_p.remote(a, env, max_steps=cfg["max_steps"]) for a in population]
+        ray.get(pop_fitness)
 
         best = np.argmax(pop_fitness)
         best_fit = pop_fitness[best]

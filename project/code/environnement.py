@@ -1,4 +1,5 @@
 from agents import *
+from parallelisation import EvoSim
 
 walker = np.array([
     [3, 3, 3, 3, 3],
@@ -9,18 +10,31 @@ walker = np.array([
     ])
 
 def make_env(env_name, seed=None, robot=None, **kwargs):
-    if robot is None: 
-        env = gym.make(env_name, **kwargs)
-    else:
-        connections = get_full_connectivity(robot)
-        env = gym.make(env_name, body=robot, connections=connections, **kwargs)
+    # if robot is None: 
+    #     env = EvoSim(env_name).env
+    # else:
+    #     connections = get_full_connectivity(robot)
+    env = EvoSim(env_name, robot).env
     env.robot = robot
     if seed is not None:
         env.seed(seed)
         
     return env
+   
+# # Define the square task.
 
-def evaluate(agent, env, max_steps=500, render=False):
+# def square(x):
+#     return x * x
+
+# # Launch four parallel square tasks.
+# futures = [square.remote(i) for i in range(4)]
+
+# # Retrieve results.
+# print(ray.get(futures))
+# # -> [0, 1, 4, 9]
+
+@ray.remote
+def evaluate_p(agent, env, max_steps=500, render=False):
     obs, i = env.reset()
     agent.model.reset()
     reward = 0
@@ -38,8 +52,14 @@ def evaluate(agent, env, max_steps=500, render=False):
         steps += 1
         
     if render:
-        return reward, imgs
-    return reward
+        return reward, imgs, steps
+    return reward, steps
+
+def evaluate(agent, env, max_steps=500, render=False):
+    sol = evaluate_p.remote(agent, env, max_steps, render)
+    ray.get(sol)
+    return sol
+    
 
 def get_cfg(env_name, robot=None):
     env = make_env(env_name, robot=robot)
