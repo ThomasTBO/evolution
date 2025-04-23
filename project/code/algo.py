@@ -1,4 +1,4 @@
-from imports import *
+from environnement import *
 def one_plus_lambda(config):
     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
     cfg = {**config, **cfg} # Merge configs

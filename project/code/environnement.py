@@ -1,4 +1,3 @@
-from imports import *
 from agents import *
 
 walker = np.array([

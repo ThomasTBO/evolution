@@ -1,8 +1,7 @@
 from evolution import *
 
-
 if __name__ == "__main__":
-    
+
     config = {
     "env_name": "Walker-v0",
     "robot": walker,

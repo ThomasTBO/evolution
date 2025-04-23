@@ -1,4 +1,4 @@
-from imports import *
+from algo import *
 
 def ES(config):
     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
