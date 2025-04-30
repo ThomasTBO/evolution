@@ -33,9 +33,8 @@ def ES(config):
         # with Pool(processes=len(population)) as pool:
         #     pop_fitness = pool.starmap(mp_eval, [(a, cfg) for a in population])
         
-        pop_fitness = [evaluate_p.remote(a, env, max_steps=cfg["max_steps"]) for a in population]
-        ray.get(pop_fitness)
-
+        pop_fitness = [evaluate(a, env, max_steps=cfg["max_steps"]) for a in population]
+        
         for i in range(len(population)):
             population[i].fitness = pop_fitness[i]
 

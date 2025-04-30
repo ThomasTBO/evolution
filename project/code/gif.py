@@ -21,11 +21,11 @@ def create_gif(path):
     env = make_env(cfg["env_name"], robot=cfg["robot"], render_mode="rgb_array")
     env.metadata.update({'render_modes': ["rgb_array"]})
 
-    a.fitness, imgs, steps = evaluate(a, env, render=True)
+    a.fitness, imgs = evaluate(a, env, render=True)
     env.close()
     print(a.fitness)
     
     # Save the images as a gif
-    imageio.mimsave(f'project/solutions/solution.gif', imgs, duration=(1/50.0))
+    imageio.mimsave(f'project/solutions/WalkerCMA.gif', imgs, duration=(1/50.0))
 
-#create_gif(path="project/solutions/Walker0.json")
+create_gif(path="project/solutions/WalkerCMA.json")

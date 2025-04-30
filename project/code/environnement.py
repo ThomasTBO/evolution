@@ -1,5 +1,6 @@
 from agents import *
-from parallelisation import EvoSim
+# import sys
+# sys.path.append("c:/Loris/AA Supaero/2A/algo_evolutionnaires/evolution/project/code")
 
 walker = np.array([
     [3, 3, 3, 3, 3],
@@ -10,11 +11,11 @@ walker = np.array([
     ])
 
 def make_env(env_name, seed=None, robot=None, **kwargs):
-    # if robot is None: 
-    #     env = EvoSim(env_name).env
-    # else:
-    #     connections = get_full_connectivity(robot)
-    env = EvoSim(env_name, robot).env
+    if robot is None: 
+        env = gym.make(env_name)
+    else:
+        connections = get_full_connectivity(robot)
+        env = gym.make(env_name, body=robot)
     env.robot = robot
     if seed is not None:
         env.seed(seed)
@@ -33,8 +34,8 @@ def make_env(env_name, seed=None, robot=None, **kwargs):
 # print(ray.get(futures))
 # # -> [0, 1, 4, 9]
 
-@ray.remote
-def evaluate_p(agent, env, max_steps=500, render=False):
+
+def evaluate(agent, env, max_steps=500, render=False):
     obs, i = env.reset()
     agent.model.reset()
     reward = 0
@@ -52,14 +53,19 @@ def evaluate_p(agent, env, max_steps=500, render=False):
         steps += 1
         
     if render:
-        return reward, imgs, steps
-    return reward, steps
+        return reward, imgs
+    return reward
 
-def evaluate(agent, env, max_steps=500, render=False):
-    sol = evaluate_p.remote(agent, env, max_steps, render)
-    ray.get(sol)
-    return sol
-    
+# @ray.remote
+# def evaluate_p(agent, env_name, robot, max_steps, render=False):
+#     # from agents import Agent  # Import explicite
+#     # print("Import ok")
+#     env = make_env(env_name, robot=robot)  # Recréer l'environnement
+#     reward = evaluate(agent, env, max_steps=max_steps, render=render)
+#     env.close()
+#     return reward
+
+
 
 def get_cfg(env_name, robot=None):
     env = make_env(env_name, robot=robot)
