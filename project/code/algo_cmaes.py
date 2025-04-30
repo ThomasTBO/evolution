@@ -3,6 +3,7 @@ from evolution import *
 import cma
 import json
 from gif import create_gif
+from parallelisation import *
 
 config = {
     "env_name": "Walker-v0",
@@ -14,8 +15,12 @@ config = {
 
 cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
 cfg = {**config, **cfg} # Merge configs
-    
+
+
 env = make_env(cfg["env_name"], robot=cfg["robot"])
+
+
+
 
 ex_agent = Agent(Network, cfg)
 
@@ -32,7 +37,10 @@ max_fitnesses = []
 
 for generation in range(config["generations"]):
     solutions = es.ask()
+    
     fitnesses = [- evaluate(Agent(Network, cfg, genes=genes), env, max_steps=cfg["max_steps"]) for genes in solutions]
+    
+
     es.tell(solutions, fitnesses)
     if es.stop() : break
 
@@ -57,7 +65,7 @@ def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json
     return save_cfg
 
 
-name = "WalkerCMA"
+name = "WalkerCMA2"
 save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
 #create_gif_cma(cfg, name = name)
 

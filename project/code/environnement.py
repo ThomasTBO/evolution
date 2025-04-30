@@ -47,7 +47,6 @@ def evaluate(agent, env, max_steps=500, render=False):
     while not done and steps < max_steps:
         if render:
             img = env.render() #mode='img'
-            print(img)
             imgs.append(img)
         action = agent.act(obs)
         obs, r, done, trunc,  _ = env.step(action)
