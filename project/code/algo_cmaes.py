@@ -7,9 +7,9 @@ from gif import create_gif
 config = {
     "env_name": "Walker-v0",
     "robot": walker,
-    "generations": 50, # To change: increase!
+    "generations": 20, # To change: increase!
     "lambda": 10,
-    "max_steps": 100, # to change to 500
+    "max_steps": 500, # to change to 500
     }
 
 cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
@@ -59,7 +59,7 @@ def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json
 
 name = "WalkerCMA"
 save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
-create_gif_cma(cfg, name = name)
+#create_gif_cma(cfg, name = name)
 
 
 

@@ -4,21 +4,22 @@ import imageio
 
 from evolution import *
 
-def create_gif_cma(cfg, name):
+def create_gif_cma( name):
     path = "project/solutions/" + name + ".json"
     
     with open(path, "r") as f:
         solution = json.load(f)
     solution["robot"] = np.array(solution["robot"])
     solution["genes"] = np.array(solution["genes"])
-    a = Agent(Network, cfg, genes=solution["genes"])
+    a = Agent(Network, solution, genes=solution["genes"])
     a.fitness = solution["fitness"]
     print(a.fitness)
     
-    env = make_env(cfg["env_name"], robot=cfg["robot"], render_mode="rgb_array")
+    env = make_env(solution["env_name"], robot=solution["robot"], render_mode="rgb_array")
     env.metadata.update({'render_modes': ["rgb_array"]})
     
-    a.fitness, imgs = evaluate(a, env, render=True)
+    a.fitness, imgs = evaluate(a, env, render=True, max_steps=100)
+    print(imgs)
     env.close()
     print(a.fitness)
     
@@ -37,5 +38,5 @@ config = {
 if __name__ == "__main__":
     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
     cfg = {**config, **cfg} # Merge configs
-    create_gif_cma(cfg, name="WalkerCMA")
+    create_gif_cma(name="WalkerCMA")
     
