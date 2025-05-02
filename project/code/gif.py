@@ -28,4 +28,4 @@ def create_gif(path):
     # Save the images as a gif
     imageio.mimsave(f'project/solutions/WalkerCMA.gif', imgs, duration=(1/50.0))
 
-create_gif(path="project/solutions/WalkerCMA.json")
+# create_gif(path="project/solutions/WalkerCMA.json")
