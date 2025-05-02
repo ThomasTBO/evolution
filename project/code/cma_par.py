@@ -209,7 +209,7 @@ if __name__ == "__main__":
 
     es = cma.CMAEvolutionStrategy(
         x0=ex_agent.genes,  # Initial mean (e.g., 2D search space)
-        sigma0 = 0.5,  # Initial standard deviation
+        sigma0 = 0.3,  # Initial standard deviation
         inopts={'popsize': 20, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
     )
 
@@ -252,7 +252,7 @@ if __name__ == "__main__":
         return save_cfg
 
 
-    name = "WalkerCMA8"
+    name = "WalkerCMA9"
     save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name = name)
 
