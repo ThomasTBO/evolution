@@ -209,8 +209,8 @@ if __name__ == "__main__":
 
     es = cma.CMAEvolutionStrategy(
         x0=ex_agent.genes,  # Initial mean (e.g., 2D search space)
-        sigma0 = 0.5,  # Initial standard deviation
-        inopts={'popsize': 10, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
+        sigma0 = 0.8,  # Initial standard deviation
+        inopts={'popsize': 20, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
     )
 
 
