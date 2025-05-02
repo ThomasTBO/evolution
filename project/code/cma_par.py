@@ -195,10 +195,17 @@ if __name__ == "__main__":
     [3, 0, 0, 0, 3]
     ])
     
+    thrower1= np.array([
+    [3, 0, 0, 0, 0],
+    [3, 0, 0, 0, 3],
+    [3, 3, 0, 0, 3],
+    [0, 3, 3, 3, 3],
+    [0, 3, 0, 0, 3]
+    ])
 
     config = {
-        "env_name": "Walker-v0",
-        "robot": walker8,
+        "env_name": "Thrower-v0",
+        "robot": thrower1,
         "generations": 50, # To change: increase!
         "lambda": 10,
         "max_steps": 100, # to change to 500
@@ -260,7 +267,7 @@ if __name__ == "__main__":
         return save_cfg
 
 
-    name = "WalkerCMA11"
+    name = "ThrowerCMA1"
     save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name = name)
 
