@@ -252,7 +252,7 @@ if __name__ == "__main__":
         return save_cfg
 
 
-    name = "WalkerCMA6"
+    name = "WalkerCMA7"
     save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name = name)
 
