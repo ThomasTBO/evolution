@@ -191,7 +191,7 @@ if __name__ == "__main__":
     config = {
         "env_name": "Walker-v0",
         "robot": walker5,
-        "generations": 50, # To change: increase!
+        "generations": 80, # To change: increase!
         "lambda": 10,
         "max_steps": 500, # to change to 500
         }
@@ -209,8 +209,8 @@ if __name__ == "__main__":
 
     es = cma.CMAEvolutionStrategy(
         x0=ex_agent.genes,  # Initial mean (e.g., 2D search space)
-        sigma0 = 0.3,  # Initial standard deviation
-        inopts={'popsize': 20, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
+        sigma0 = 0.5,  # Initial standard deviation
+        inopts={'popsize': 10, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
     )
 
 
@@ -252,7 +252,7 @@ if __name__ == "__main__":
         return save_cfg
 
 
-    name = "WalkerCMA9"
+    name = "WalkerCMA10"
     save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name = name)
 
