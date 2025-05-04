@@ -21,7 +21,7 @@ def create_gif_cma(name):
     a.fitness, imgs = evaluate(a, env, render=True, max_steps=500)
     
     env.close()
-    print(f"With 500 steps : {a.fitness}")
+    #print(f"With 500 steps : {a.fitness}")
     
     # Save the images as a gif
     imageio.mimsave(f'project/solutions/' + name + '.gif', imgs, duration=(1/50.0))

@@ -66,5 +66,3 @@ def mutate(morphology, probability=1/25):
 # print(morphology)
 # print("Mutated Morphology:")
 # print(new_morphology)        
-
-    

@@ -325,9 +325,9 @@ if __name__ == "__main__":
     ])
 
     #PARAMETRES
-    nb_sim = 5
+    nb_sim = 6
 
-    iterations_morpho = 4 #9 # Number of iterations for the morpho evolution
+    iterations_morpho = 5 # Number of iterations for the morpho evolution
     morpho_popsize = 10 # Population size for morpho evolution
     
     cma_gen_counter = 10 # Number of generations for CMA-ES
@@ -335,16 +335,16 @@ if __name__ == "__main__":
     cma_max_steps = 500 # Number of steps for CMA-ES
     cma_sigma0 = 1 # Initial standard deviation for CMA-ES
 
-    nb_elites = 4 # Proportion of elites to keep
-    tournament_size = 3 # Size of the tournament for selection
+    nb_elites = 3 # Proportion of elites to keep
+    tournament_size = 4 # Size of the tournament for selection
 
-    cma_gen_counter_final = 50 # Number of generations for final CMA-ES
-    cma_popsize_final = 20 # Population size for final CMA-ES
+    cma_gen_counter_final = 100 # Number of generations for final CMA-ES
+    cma_popsize_final = 50 # Population size for final CMA-ES
     cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
-    cma_sigma0_final = 1 # Initial standard deviation for final CMA-ES
+    cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
 
-    proba_mutate_elites = 2/25 # Probability of mutation for elites
-    proba_mutate_tournament = 2/25 # Probability of mutation for tournament selection
+    proba_mutate_elites = 3/25 # Probability of mutation for elites
+    proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
     
     
     previous_best = walker0
@@ -425,5 +425,3 @@ if __name__ == "__main__":
         # save_solution_cma(best_trained, fitness, best_cfg, name="project/solutions/MorphoEvol/" + name + ".json")
         # create_gif_cma(name="MorphoEvol/"+ name)
         
-# #pistes amélioration : ne pas mettre valeur 5 pour walker, faire compétitions pour sélection voire croisements
-#Idées : conserver les gènes des robots entrainés, sélectionner l'ousider de chaque itération
