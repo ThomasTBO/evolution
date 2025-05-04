@@ -6,6 +6,7 @@ from gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma
+import os
 
 class Network(nn.Module):
     def __init__(self, n_in, h_size, n_out):
@@ -328,36 +329,38 @@ if __name__ == "__main__":
    
 
     #PARAMETRES
-    nb_sim = 4
+    nb_sim = 8
+    os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
     
-    iterations_morpho = 6 # Number of iterations for the morpho evolution
-    morpho_popsize = 30 # Population size for morpho evolution
+    iterations_morpho = 4 # Number of iterations for the morpho evolution
+    morpho_popsize = 15 # Population size for morpho evolution
     
-    cma_gen_counter = 10 # Number of generations for CMA-ES
-    cma_popsize = 5 # Population size for CMA-ES
-    cma_max_steps = 200 # Number of steps for CMA-ES
-    cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+    cma_gen_counter = 33 # Number of generations for CMA-ES
+    cma_popsize = 10 # Population size for CMA-ES
+    cma_max_steps = 250 # Number of steps for CMA-ES
+    cma_sigma0 = 2 # Initial standard deviation for CMA-ES
 
     nb_elites = 5 # Proportion of elites to keep
-    tournament_size = 7 # Size of the tournament for selection
+    tournament_size = 5 # Size of the tournament for selection
 
-    cma_gen_counter_final = 67 # Number of generations for final CMA-ES
-    cma_popsize_final = 15 # Population size for final CMA-ES
-    cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+    cma_gen_counter_final = 200 # Number of generations for final CMA-ES
+    cma_popsize_final = 20 # Population size for final CMA-ES
+    cma_max_steps_final = 500 # Number of steps for final CMA-ES 
+    cma_sigma0_final = 1 # Initial standard deviation for final CMA-ES
 
     proba_mutate_elites = 7/25 # Probability of mutation for elites
-    proba_mutate_tournament = 7/25 # Probability of mutation for tournament selection
+    proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
+    proba_mutate_inital = 10/25 # Probability of mutation for initial morpho
     
     
     previous_best = thrower0
     previous_best_fitness = 0 
-    new_gen = [morpho.mutate(thrower0, proba_mutate_elites) for _ in range(morpho_popsize-1)] + [thrower0] 
+    new_gen = [morpho.mutate(thrower0, proba_mutate_inital) for _ in range(morpho_popsize-1)] + [thrower0] 
     robots_memory = {}
     for i in range(iterations_morpho): 
         pop = new_gen.copy()
         new_gen.clear() 
-        new_gen = []
+        new_gen = [previous_best]
 
         #Evaluation
         for robot in pop:
@@ -398,7 +401,8 @@ if __name__ == "__main__":
             create_gif_cma(name= name)
             previous_best = best_robot
             previous_best_fitness = best_fitness
-
+    
+        
 
     #Entrainement CMA-ES sur la meilleure morpho
     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
@@ -474,3 +478,141 @@ if __name__ == "__main__":
 
     # proba_mutate_elites = 7/25 # Probability of mutation for elites
     # proba_mutate_tournament = 7/25 # Probability of mutation for tournament selection
+
+    #  nb_sim = 5
+    
+    # iterations_morpho = 6 # Number of iterations for the morpho evolution
+    # morpho_popsize = 30 # Population size for morpho evolution
+    
+    # cma_gen_counter = 10 # Number of generations for CMA-ES
+    # cma_popsize = 5 # Population size for CMA-ES
+    # cma_max_steps = 200 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 15 # Proportion of elites to keep
+    # tournament_size = 4 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 67 # Number of generations for final CMA-ES
+    # cma_popsize_final = 15 # Population size for final CMA-ES
+    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 5/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 8/25 # Probability of mutation for tournament selection
+
+# nb_sim = 6
+#     os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+    
+#     iterations_morpho = 6 # Number of iterations for the morpho evolution
+#     morpho_popsize = 30 # Population size for morpho evolution
+    
+#     cma_gen_counter = 10 # Number of generations for CMA-ES
+#     cma_popsize = 5 # Population size for CMA-ES
+#     cma_max_steps = 200 # Number of steps for CMA-ES
+#     cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+#     nb_elites = 5 # Proportion of elites to keep
+#     tournament_size = 6 # Size of the tournament for selection
+
+#     cma_gen_counter_final = 67 # Number of generations for final CMA-ES
+#     cma_popsize_final = 15 # Population size for final CMA-ES
+#     cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+#     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+#     proba_mutate_elites = 7/25 # Probability of mutation for elites
+#     proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
+    
+
+    #    nb_sim = 7
+    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+    
+    # iterations_morpho = 1 # Number of iterations for the morpho evolution
+    # morpho_popsize = 150 # Population size for morpho evolution
+    
+    # cma_gen_counter = 15 # Number of generations for CMA-ES
+    # cma_popsize = 5 # Population size for CMA-ES
+    # cma_max_steps = 200 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 5 # Proportion of elites to keep
+    # tournament_size = 6 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 67  # Number of generations for final CMA-ES
+    # cma_popsize_final = 15 # Population size for final CMA-ES
+    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 10/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
+    
+    # #PARAMETRES
+    # nb_sim = 7.1
+    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+    
+    # iterations_morpho = 1 # Number of iterations for the morpho evolution
+    # morpho_popsize = 106 # Population size for morpho evolution
+    
+    # cma_gen_counter = 15 # Number of generations for CMA-ES
+    # cma_popsize = 5 # Population size for CMA-ES
+    # cma_max_steps = 200 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 5 # Proportion of elites to keep
+    # tournament_size = 6 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 100 # Number of generations for final CMA-ES
+    # cma_popsize_final = 20 # Population size for final CMA-ES
+    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 10/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
+    
+    #  #PARAMETRES
+    # nb_sim = 7
+    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+    
+    # iterations_morpho = 3 # Number of iterations for the morpho evolution
+    # morpho_popsize = 40 # Population size for morpho evolution
+    
+    # cma_gen_counter = 10 # Number of generations for CMA-ES
+    # cma_popsize = 5 # Population size for CMA-ES
+    # cma_max_steps = 250 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 14 # Proportion of elites to keep
+    # tournament_size = 15 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 200 # Number of generations for final CMA-ES
+    # cma_popsize_final = 20 # Population size for final CMA-ES
+    # cma_max_steps_final = 500 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.3 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 10/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 10/25 # Probability of mutation for tournament selection
+    
+    #  #PARAMETRES
+    # nb_sim = 8
+    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+    
+    # iterations_morpho = 4 # Number of iterations for the morpho evolution
+    # morpho_popsize = 15 # Population size for morpho evolution
+    
+    # cma_gen_counter = 33 # Number of generations for CMA-ES
+    # cma_popsize = 10 # Population size for CMA-ES
+    # cma_max_steps = 250 # Number of steps for CMA-ES
+    # cma_sigma0 = 2 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 5 # Proportion of elites to keep
+    # tournament_size = 5 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 200 # Number of generations for final CMA-ES
+    # cma_popsize_final = 20 # Population size for final CMA-ES
+    # cma_max_steps_final = 500 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 1 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 7/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
+    # proba_mutate_inital = 10/25 # Probability of mutation for initial morpho
+    
+    
