@@ -273,7 +273,7 @@ def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json
 
 import morpho
 
-def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1):
+def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes=None):
 
     config = {
         "env_name": "Walker-v0",
@@ -287,8 +287,10 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1):
     cfg = {**config, **cfg} # Merge configs
     env = EvoGymEnv(cfg["env_name"], robot=cfg["robot"])
     ex_agent = Agent(Network, cfg)
+    if genes is None:
+        genes = ex_agent.genes
     es = cma.CMAEvolutionStrategy(
-        x0=ex_agent.genes,  # Initial mean (e.g., 2D search space)
+        x0=genes,  # Initial mean (e.g., 2D search space)
         sigma0 = sigma0,  # Initial standard deviation
         inopts={'popsize': popsize, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
     )
@@ -314,10 +316,18 @@ if __name__ == "__main__":
     [3, 3, 0, 3, 3]
     ])
 
-    #PARAMETRES
-    nb_sim = 4
+    walker00 = np.array([
+    [3, 3, 3, 3, 3],
+    [3, 0, 0, 0, 3],
+    [3, 0, 0, 0, 3],
+    [3, 0, 0, 0, 3],
+    [3, 0, 0, 0, 3]
+    ])
 
-    iterations_morpho = 9 # Number of iterations for the morpho evolution
+    #PARAMETRES
+    nb_sim = 5
+
+    iterations_morpho = 4 #9 # Number of iterations for the morpho evolution
     morpho_popsize = 10 # Population size for morpho evolution
     
     cma_gen_counter = 10 # Number of generations for CMA-ES
@@ -325,7 +335,7 @@ if __name__ == "__main__":
     cma_max_steps = 500 # Number of steps for CMA-ES
     cma_sigma0 = 1 # Initial standard deviation for CMA-ES
 
-    nb_elites = 5 # Proportion of elites to keep
+    nb_elites = 4 # Proportion of elites to keep
     tournament_size = 3 # Size of the tournament for selection
 
     cma_gen_counter_final = 50 # Number of generations for final CMA-ES
@@ -338,6 +348,7 @@ if __name__ == "__main__":
     
     
     previous_best = walker0
+    previous_best_fitness = 0 
     new_gen = [morpho.mutate(walker0) for _ in range(morpho_popsize)] + [walker0] 
     robots_memory = {}
     for i in range(iterations_morpho): 
@@ -353,11 +364,15 @@ if __name__ == "__main__":
                 genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
                 robots_memory[robot_key] = (genes, fitness, cfg) 
 
+            else : 
+                genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0, genes=robots_memory[robot_key][0])
+                if fitness > robots_memory[robot_key][1]:
+                    robots_memory[robot_key] = (genes, fitness, cfg) 
 
         #Selection elite & mutations
         best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
         best_robot = np.array(best_robot_key)
-        new_gen = [morpho.mutate(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
+        new_gen = [best_robot] + [morpho.mutate(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
         
 
         #Selection tournament & mutations
@@ -372,13 +387,15 @@ if __name__ == "__main__":
         print(f"Iteration {i + 1}:")
         print(f"  Best fitness: {best_fitness}")
         print(f"  Best morphology:\n{best_robot}")
-        if previous_best == best_robot:
+        if np.array_equal(previous_best, best_robot) and best_fitness == previous_best_fitness:
             print("Same morphology as previous best.")
         else:
-            name = f"MorphoEvol/Simu{nb_sim}/WalkerIterFinal{i+1}"
+            name = f"MorphoEvol/Simu{nb_sim}/WalkerIter{i+1}"
             save_solution_cma(best_trained, best_fitness, best_cfg, name="project/solutions/" + name + ".json")
             create_gif_cma(name= name)
             previous_best = best_robot
+            previous_best_fitness = best_fitness
+
 
     #Entrainement CMA-ES sur la meilleure morpho
     # best_robot_key, (best_trained, best_fitness, best_cfg) = robots_memory[0]
@@ -388,13 +405,12 @@ if __name__ == "__main__":
     print(f"  Best fitness: {fitness}")
     print(f"  Best morphology:\n{best_robot}")
 
-    if previous_best == best_robot:
-        print("Same morphology as previous best.")
-    else:
-        name = f"MorphoEvol/Simu{nb_sim}/WalkerIterFinal"
-        save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
-        create_gif_cma(name= name)
-        previous_best = best_robot
+    
+    
+    name = f"MorphoEvol/Simu{nb_sim}/WalkerIterFinal"
+    save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
+    create_gif_cma(name= name)
+    previous_best = best_robot
         
         
         # best_robot_key, (best_trained, fitness, best_cfg) = sorted_robots[0]
