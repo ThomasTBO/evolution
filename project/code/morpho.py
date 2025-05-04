@@ -47,7 +47,7 @@ def mutate(morphology, probability=1/25):
                             has_non_zero_adjacent = True
                         break
                     # Mutate empty squares with non-zero adjacent squares 
-                    if has_non_zero_adjacent and np.random.rand() < probability:
+                    if has_non_zero_adjacent :
                         new_morphology[i][j] = np.random.randint(0, 5)
 
     return new_morphology
@@ -61,7 +61,7 @@ def mutate(morphology, probability=1/25):
 #     [0, 3, 1, 0, 0]
 # ])
 
-# new_morphology = mutate(morphology, 1)
+# new_morphology = mutate(morphology, 5/25)
 # print("Original Morphology:")
 # print(morphology)
 # print("Mutated Morphology:")
