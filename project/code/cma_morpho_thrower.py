@@ -403,7 +403,7 @@ if __name__ == "__main__":
     #Entrainement CMA-ES sur la meilleure morpho
     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
     best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
-    genes, fitness, cfg = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[robot_key][0])
+    genes, fitness, cfg = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0])
     print(f"Final training:")
     print(f"  Best fitness: {fitness}")
     print(f"  Best morphology:\n{best_robot}")
