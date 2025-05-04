@@ -325,10 +325,12 @@ if __name__ == "__main__":
     ])
 
     #PARAMETRES
-    nb_sim = 6
+    nb_sim = 7
+    import os
+    os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
 
-    iterations_morpho = 5 # Number of iterations for the morpho evolution
-    morpho_popsize = 10 # Population size for morpho evolution
+    iterations_morpho = 3 # Number of iterations for the morpho evolution
+    morpho_popsize = 16 # Population size for morpho evolution
     
     cma_gen_counter = 10 # Number of generations for CMA-ES
     cma_popsize = 10 # Population size for CMA-ES
@@ -343,8 +345,8 @@ if __name__ == "__main__":
     cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
 
-    proba_mutate_elites = 3/25 # Probability of mutation for elites
-    proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+    proba_mutate_elites = 5/25 # Probability of mutation for elites
+    proba_mutate_tournament = 5/25 # Probability of mutation for tournament selection
     
     
     previous_best = walker0
@@ -425,3 +427,52 @@ if __name__ == "__main__":
         # save_solution_cma(best_trained, fitness, best_cfg, name="project/solutions/MorphoEvol/" + name + ".json")
         # create_gif_cma(name="MorphoEvol/"+ name)
         
+
+    #     #PARAMETRES
+     # nb_sim = 6
+    # import os
+    # os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
+
+    # iterations_morpho = 5 # Number of iterations for the morpho evolution
+    # morpho_popsize = 10 # Population size for morpho evolution
+    
+    # cma_gen_counter = 10 # Number of generations for CMA-ES
+    # cma_popsize = 10 # Population size for CMA-ES
+    # cma_max_steps = 500 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 3 # Proportion of elites to keep
+    # tournament_size = 4 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 100 # Number of generations for final CMA-ES
+    # cma_popsize_final = 50 # Population size for final CMA-ES
+    # cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 3/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+
+    # nb_sim = 7
+    # import os
+    # os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
+
+    # iterations_morpho = 3 # Number of iterations for the morpho evolution
+    # morpho_popsize = 16 # Population size for morpho evolution
+    
+    # cma_gen_counter = 10 # Number of generations for CMA-ES
+    # cma_popsize = 10 # Population size for CMA-ES
+    # cma_max_steps = 500 # Number of steps for CMA-ES
+    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+
+    # nb_elites = 3 # Proportion of elites to keep
+    # tournament_size = 4 # Size of the tournament for selection
+
+    # cma_gen_counter_final = 100 # Number of generations for final CMA-ES
+    # cma_popsize_final = 50 # Population size for final CMA-ES
+    # cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
+    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+    # proba_mutate_elites = 3/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+    
+    

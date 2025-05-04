@@ -4,7 +4,7 @@ import imageio
 
 from evolution import *
 
-def create_gif_cma(name):
+def create_gif_cma(name, max_steps=500):
     path = "project/solutions/" + name + ".json"
     
     with open(path, "r") as f:
@@ -18,10 +18,10 @@ def create_gif_cma(name):
     env = make_env(solution["env_name"], robot=solution["robot"], render_mode="rgb_array")
     env.metadata.update({'render_modes': ["rgb_array"]})
     
-    a.fitness, imgs = evaluate(a, env, render=True, max_steps=500)
+    a.fitness, imgs = evaluate(a, env, render=True, max_steps=max_steps)
     
     env.close()
-    #print(f"With 500 steps : {a.fitness}")
+    print(f"With 500 steps : {a.fitness}")
     
     # Save the images as a gif
     imageio.mimsave(f'project/solutions/' + name + '.gif', imgs, duration=(1/50.0))

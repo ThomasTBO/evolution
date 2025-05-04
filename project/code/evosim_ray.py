@@ -171,23 +171,23 @@ if __name__ == "__main__":
     #env = make_env(cfg["env_name"], robot=cfg["robot"])
 
 
-    # #Avec ray :
-    # env = EvoGymEnv(cfg["env_name"], robot=cfg["robot"])
+    #Avec ray :
+    env = EvoGymEnv(cfg["env_name"], robot=cfg["robot"])
 
     agent = Agent(Network, cfg)
 
     nb_evals = 10
-#     #  Check time series
-#     t_0 = time.time()
-#     for _ in range(nb_evals):
-#         task = evaluate_env.remote(env, horizon=1000)
-#         result = ray.get(task)
-#     t_1 = time.time()
-#     print(f"Time taken for {nb_evals} evaluations in series: {t_1 - t_0:.2f} seconds")
+    #  Check time series
+    t_0 = time.time()
+    for _ in range(nb_evals):
+        task = evaluate_env.remote(env, agent, horizon=1000)
+        result = ray.get(task)
+    t_1 = time.time()
+    print(f"Time taken for {nb_evals} evaluations in series: {t_1 - t_0:.2f} seconds")
 
-#     # Check time parallel
-#     t_0 = time.time()
+    # Check time parallel
+    t_0 = time.time()
     tasks = [evaluate_env.remote(env, agent,  horizon=1000) for _ in range(nb_evals)]
     results = ray.get(tasks)
-#     t_1 = time.time()
-#     print(f"Time taken for {nb_evals} evaluations in parallel: {t_1 - t_0:.2f} seconds")
+    t_1 = time.time()
+    print(f"Time taken for {nb_evals} evaluations in parallel: {t_1 - t_0:.2f} seconds")
