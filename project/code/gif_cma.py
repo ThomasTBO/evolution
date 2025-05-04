@@ -13,7 +13,7 @@ def create_gif_cma(name):
     solution["genes"] = np.array(solution["genes"])
     a = Agent(Network, solution, genes=solution["genes"])
     a.fitness = solution["fitness"]
-    print(a.fitness)
+    
     
     env = make_env(solution["env_name"], robot=solution["robot"], render_mode="rgb_array")
     env.metadata.update({'render_modes': ["rgb_array"]})
@@ -21,7 +21,7 @@ def create_gif_cma(name):
     a.fitness, imgs = evaluate(a, env, render=True, max_steps=500)
     
     env.close()
-    print(a.fitness)
+    print(f"With 500 steps : {a.fitness}")
     
     # Save the images as a gif
     imageio.mimsave(f'project/solutions/' + name + '.gif', imgs, duration=(1/50.0))
