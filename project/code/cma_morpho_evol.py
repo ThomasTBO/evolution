@@ -143,119 +143,6 @@ def evaluate_env(env, agent, horizon = 500):
         value += reward
     return - value
     
-    
-    
-# if __name__ == "__main__":
-   
-#     walker3 = np.array([
-#     [3, 3, 3, 3, 3],
-#     [3, 4, 0, 4, 3],
-#     [3, 0, 0, 4, 3],
-#     [3, 3, 0, 4, 3],
-#     [3, 3, 0, 4, 3]
-#     ])
-    
-#     walker4 = np.array([
-#     [0, 4, 4, 4, 0],
-#     [4, 0, 3, 0, 4],
-#     [4, 3, 1, 3, 4],
-#     [4, 0, 3, 0, 4],
-#     [0, 4, 4, 4, 0]
-#     ])
-
-#     walker5 = np.array([
-#     [3, 3, 3, 3, 3],
-#     [3, 0, 0, 0, 3],
-#     [3, 0, 0, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3]
-#     ])
-
-#     walker6 = np.array([
-#     [3, 3, 3, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3]
-#     ])
-
-#     walker7 = np.array([
-#     [3, 3, 3, 3, 3],
-#     [3, 3, 0, 0, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3]
-#     ])
-    
-#     walker8 = np.array([
-#     [3, 3, 3, 3, 3],
-#     [3, 3, 3, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 3, 0, 3, 3],
-#     [3, 0, 0, 0, 3]
-#     ])
-    
-#     thrower1= np.array([
-#     [3, 0, 0, 0, 0],
-#     [3, 3, 3, 3, 3],
-#     [0, 0, 0, 0, 3],
-#     [0, 0, 0, 0, 3],
-#     [3, 3, 3, 3, 3]
-#     ])
-
-#     config = {
-#         "env_name": "Thrower-v0",
-#         "robot": thrower1,
-#         "generations": 80, # To change: increase!
-#         "lambda": 10,
-#         "max_steps": 500, # to change to 500
-#         }
-
-#     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
-#     cfg = {**config, **cfg} # Merge configs
-
-
-#     env = EvoGymEnv(cfg["env_name"], robot=cfg["robot"])
-
-#     ex_agent = Agent(Network, cfg)
-
-
-#     es = cma.CMAEvolutionStrategy(
-#         x0=ex_agent.genes,  # Initial mean (e.g., 2D search space)
-#         sigma0 = 1,  # Initial standard deviation
-#         inopts={'popsize': 20, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
-#     )
-
-
-#     gen_counter = 0
-#     max_fitnesses = []
-
-#     for generation in range(config["generations"]):
-#         solutions = es.ask()
-        
-#         # agent = Agent(Network, cfg)
-#         # nb_evals = 10
-#         # tasks = [evaluate_env.remote(env, agent,  horizon=1000) for _ in range(nb_evals)]
-#         # results = ray.get(tasks)    
-
-#         tasks = [evaluate_env.remote(env, Agent(Network, cfg, genes=genes), horizon=cfg["max_steps"]) for genes in solutions]
-#         fitnesses = ray.get(tasks)
-
-#         es.tell(solutions, fitnesses)
-#         if es.stop() : break
-
-#         gen_counter +=1
-#         max_fitnesses.append(-es.result.fbest)
-
-#     print("Best fitness:", -es.result.fbest)
-#     plt.plot(range(1,gen_counter+1),max_fitnesses)
-#     plt.show()
-
-#     
-
-#     name = "ThrowerCMA2"
-#     save_solution_cma(es.result.xbest, -es.result.fbest, cfg, name="project/solutions/" + name + ".json")
-#     create_gif_cma(name = name)
 
 def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json"):
         save_cfg = {}
@@ -273,8 +160,8 @@ def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json
 
 import morpho
 
-def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes=None):
-
+def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes=None, show_fitness=False):
+    global seed
     config = {
         "env_name": "Walker-v0",
         "robot": robot,
@@ -292,7 +179,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
     es = cma.CMAEvolutionStrategy(
         x0=genes,  # Initial mean (e.g., 2D search space)
         sigma0 = sigma0,  # Initial standard deviation
-        inopts={'popsize': popsize, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
+        inopts={'popsize': popsize, 'verb_disp': 1, "seed" : seed} # Options (e.g., population size, verbosity)
+       
     )
     gen_counter = 0
     max_fitnesses = []
@@ -304,6 +192,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
         if es.stop() : break
         gen_counter +=1
         max_fitnesses.append(-es.result.fbest)
+    if show_fitness:
+        return es.result.xbest, -es.result.fbest, cfg, max_fitnesses
     return es.result.xbest, -es.result.fbest, cfg
    
 if __name__ == "__main__":
@@ -325,33 +215,35 @@ if __name__ == "__main__":
     ])
 
     #PARAMETRES
-    nb_sim = 7
+    nb_sim = 63
     import os
     os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
 
-    iterations_morpho = 3 # Number of iterations for the morpho evolution
-    morpho_popsize = 16 # Population size for morpho evolution
+    seed = 2
+
+    iterations_morpho = 2 # Number of iterations for the morpho evolution
+    morpho_popsize = 15 # Population size for morpho evolution
     
     cma_gen_counter = 10 # Number of generations for CMA-ES
     cma_popsize = 10 # Population size for CMA-ES
     cma_max_steps = 500 # Number of steps for CMA-ES
-    cma_sigma0 = 1 # Initial standard deviation for CMA-ES
+    cma_sigma0 = 2 # Initial standard deviation for CMA-ES
 
     nb_elites = 3 # Proportion of elites to keep
     tournament_size = 4 # Size of the tournament for selection
 
-    cma_gen_counter_final = 100 # Number of generations for final CMA-ES
+    cma_gen_counter_final = 140 # Number of generations for final CMA-ES
     cma_popsize_final = 50 # Population size for final CMA-ES
     cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
 
-    proba_mutate_elites = 5/25 # Probability of mutation for elites
-    proba_mutate_tournament = 5/25 # Probability of mutation for tournament selection
-    
-    
+    proba_mutate_elites = 3/25 # Probability of mutation for elites
+    proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+    proba_mutate_init = 10/25 
+
     previous_best = walker0
     previous_best_fitness = 0 
-    new_gen = [morpho.mutate(walker0) for _ in range(morpho_popsize)] + [walker0] 
+    new_gen = [morpho.mutate(walker0, probability = proba_mutate_init ) for _ in range(morpho_popsize-1)] + [walker0] 
     robots_memory = {}
     for i in range(iterations_morpho): 
         pop = new_gen.copy()
@@ -402,18 +294,20 @@ if __name__ == "__main__":
     #Entrainement CMA-ES sur la meilleure morpho
     # best_robot_key, (best_trained, best_fitness, best_cfg) = robots_memory[0]
     # best = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
-    genes, fitness, cfg = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final)
+    genes, fitness, cfg , fitness_list= run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, show_fitness=True)
     print(f"Final training:")
     print(f"  Best fitness: {fitness}")
     print(f"  Best morphology:\n{best_robot}")
-
+    
     
     
     name = f"MorphoEvol/Simu{nb_sim}/WalkerIterFinal"
     save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name= name)
-    previous_best = best_robot
-        
+   
+    plt.plot(range(1, cma_gen_counter_final+1), fitness_list)
+    plt.savefig(f"project/solutions/MorphoEvol/Simu{nb_sim}/WalkerIterFinal.png")
+    plt.show()
         
         # best_robot_key, (best_trained, fitness, best_cfg) = sorted_robots[0]
         # best = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
@@ -476,3 +370,29 @@ if __name__ == "__main__":
     # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
     
     
+#  #PARAMETRES
+#     nb_sim = 62
+#     import os
+#     os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
+
+#     seed = 1
+
+#     iterations_morpho = 2 # Number of iterations for the morpho evolution
+#     morpho_popsize = 15 # Population size for morpho evolution
+    
+#     cma_gen_counter = 10 # Number of generations for CMA-ES
+#     cma_popsize = 10 # Population size for CMA-ES
+#     cma_max_steps = 500 # Number of steps for CMA-ES
+#     cma_sigma0 = 2 # Initial standard deviation for CMA-ES
+
+#     nb_elites = 3 # Proportion of elites to keep
+#     tournament_size = 4 # Size of the tournament for selection
+
+#     cma_gen_counter_final = 140 # Number of generations for final CMA-ES
+#     cma_popsize_final = 50 # Population size for final CMA-ES
+#     cma_max_steps_final = 500 # #NE PAS CHANGER, Number of steps for final CMA-ES 
+#     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
+
+#     proba_mutate_elites = 3/25 # Probability of mutation for elites
+#     proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+#     proba_mutate_init = 10/25 
