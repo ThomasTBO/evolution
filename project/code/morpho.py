@@ -97,16 +97,16 @@ def mutate_climber(morphology, probability=1/25):
 
     return new_morphology
 
-morphology = np.array([
-    [3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3],
-    [3, 3, 3, 3, 3]
-])
+# morphology = np.array([
+#     [3, 3, 3, 3, 3],
+#     [3, 3, 3, 3, 3],
+#     [3, 3, 3, 3, 3],
+#     [3, 3, 3, 3, 3],
+#     [3, 3, 3, 3, 3]
+# ])
 
-new_morphology = mutate_climber(morphology, 25/25)
-print("Original Morphology:")
-print(morphology)
-print("Mutated Morphology:")
-print(new_morphology)        
+# new_morphology = mutate_climber(morphology, 25/25)
+# print("Original Morphology:")
+# print(morphology)
+# print("Mutated Morphology:")
+# print(new_morphology)        
