@@ -199,35 +199,34 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
 def evaluation(pop, cma_gen_counter, cma_max_steps, cma_popsize, cma_sigma0):
     global robots_memory
     for robot in pop:
-                robot_key = tuple(map(tuple, robot)) #Une morpho = une clé
+        robot_key = tuple(map(tuple, robot)) #Une morpho = une clé
 
-                if robot_key not in robots_memory:
-                    genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
-                    robots_memory[robot_key] = (genes, fitness, cfg) 
+        if robot_key not in robots_memory:
+            genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
+            robots_memory[robot_key] = (genes, fitness, cfg) 
 
-                else : 
-                    genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0, genes=robots_memory[robot_key][0])
-                    if fitness > robots_memory[robot_key][1]:
-                        robots_memory[robot_key] = (genes, fitness, cfg) 
-
+        else : 
+            genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0, genes=robots_memory[robot_key][0])
+            if fitness > robots_memory[robot_key][1]:
+                robots_memory[robot_key] = (genes, fitness, cfg) 
 
 if __name__ == "__main__":
     
     climber0 = np.array([
-    [3, 0, 0, 0, 3],
-    [3, 4, 4, 4, 3],
-    [0, 0, 4, 0, 0],
-    [3, 4, 4, 4, 3],
-    [3, 0, 4, 0, 3]
+    [3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3],
+    [3, 3, 3, 3, 3]
     ])
 
 
     #PARAMETRES
-    nb_sim = 2
+    nb_sim = 4
     os.makedirs(f"project/solutions/ClimberEvol/Simu{nb_sim}", exist_ok=True)
     
     # iterations_morpho = 3 # Number of iterations for the morpho evolution
-    morpho_popsize= 10 # Population size for morpho evolution
+    morpho_popsize= 4 # Population size for morpho evolution
     
     # cma_gen_counter = 10 # Number of generations for CMA-ES
     # cma_popsize = 5 # Population size for CMA-ES
@@ -244,7 +243,7 @@ if __name__ == "__main__":
 
     # proba_mutate_elites = 6/25 # Probability of mutation for elites
     # proba_mutate_tournament = 6/25 # Probability of mutation for tournament selection
-    proba_mutate_inital = 10/25 # Probability of mutation for initial morpho
+    proba_mutate_inital = 15/25 # Probability of mutation for initial morpho
     
     
     previous_best = climber0
@@ -258,14 +257,14 @@ if __name__ == "__main__":
     new_gen = [previous_best]
 
     #Evaluation
-    def cycle(nb_cma_gen, len_cma_pop, nb_gardes, cma_max_steps = 500, cma_sigma0 = 1):
+    def cycle(nb_cma_gen, len_cma_pop, nb_gardes, cma_max_steps = 500, cma_sigma0 = 1, show_fitness = False):
         global pop
         global robots_memory
         evaluation(pop, nb_cma_gen, cma_max_steps, len_cma_pop, cma_sigma0)
         sorted_robots = sorted(robots_memory.items(), key=lambda x: x[1][1], reverse=True) # Sort the robots by fitness
         next_gen = sorted_robots[:nb_gardes]
         pop = [np.array(robot_key) for robot_key, _ in next_gen] # Keep the best robots for the next generation
-        
+
 
     def printer(i):
         global robots_memory, nb_sim, previous_best, previous_best_fitness
@@ -290,52 +289,27 @@ if __name__ == "__main__":
         save_solution_cma(best_trained, best_fitness, best_cfg, name="project/solutions/" + name + ".json")
         create_gif_cma(name= name, max_steps=500)
 
-    #100 individus
-    cycle(nb_gardes = 3, nb_cma_gen= 20,  len_cma_pop= 10, cma_max_steps = 200, cma_sigma0 = 2) 
+    #4 individus
+    cycle(nb_gardes = 1, nb_cma_gen= 10,  len_cma_pop= 50, cma_max_steps = 100, cma_sigma0 = 5) 
     printer(0)
-    cycle(nb_gardes = 1, nb_cma_gen= 40, len_cma_pop = 15,cma_max_steps = 300, cma_sigma0 = 1.5) 
+    # cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 15,cma_max_steps = 100, cma_sigma0 = 1.5) 
+    # printer(1)
+    
+    gen_counter_final = 3
+    popsize_final = 20
+    gen_counter_final = 200
+    max_steps_final = 300
+    
+    best_robot = pop[0]
+    best_robot_key = tuple(map(tuple, best_robot)) #Une morpho = une clé
+    genes, fitness, cfg , max_fitness = run_cma_par(best_robot, gen_counter=gen_counter_final, max_steps=max_steps_final, popsize=popsize_final, sigma0=1, genes=robots_memory[best_robot_key][0], show_fitness=True)
+    robots_memory[best_robot_key] = (genes, fitness, cfg) 
+    plt.plot(range(1, gen_counter_final+1), max_fitness)
     printer(1)
-    # cycle(nb_gardes = 1, nb_cma_gen= 40, len_cma_pop = 10,cma_max_steps = 300, cma_sigma0 = 1) 
-    #cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 10,cma_max_steps = 300, cma_sigma0 = 1) 
-
-    best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
-    best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
-    gen_counter_final = 50
-    genes, fitness, cfg , max_fitness = run_cma_par(best_robot, gen_counter=gen_counter_final, max_steps=500, popsize=15, sigma0=1, genes=best_trained, show_fitness=True)
-    plt.plot(range(1, len(gen_counter_final)+1), max_fitness)
-    printer(2)
     saver()
+    plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
+    plt.show()  
 
-
-
-        #Selection elite & mutations
-        # best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
-        # best_robot = np.array(best_robot_key)
-        # new_gen = [morpho.mutate(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
-        
-
-        # #Selection tournament & mutations
-        # while len(new_gen) < morpho_popsize:
-        #     rng = np.random.default_rng()
-        #     tournament = rng.choice(len(pop), size=tournament_size)
-        #     robots = [pop[i] for i in tournament] 
-        #     fitness = [robots_memory[tuple(map(tuple, robot))][1] for robot in robots]
-        #     winner = robots[np.argmin(fitness)] # Select the best robot from the tournament
-        #     new_gen.append(morpho.mutate(winner, proba_mutate_tournament)) # Mutate the winner to create a new robot
-        
-       
-    
-        
-
-    # #Entrainement CMA-ES sur la meilleure morpho
-    # best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
-    # best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
-    # genes, fitness, cfg = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0])
-    # print(f"Final training:")
-    # print(f"  Best fitness: {fitness}")
-    # print(f"  Best morphology:\n{best_robot}")
-
-    
     
     
     
@@ -355,185 +329,30 @@ if __name__ == "__main__":
         
 
 #MEMOIRE SIMULATION
-#SIM 3
-#   #PARAMETRES
-#     nb_sim = 3
+
+#SIMU3
+# cycle(nb_gardes = 5, nb_cma_gen= 10,  len_cma_pop= 5, cma_max_steps = 50, cma_sigma0 = 2) 
+#     printer(0)
+#     cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 15,cma_max_steps = 100, cma_sigma0 = 1.5) 
+#     printer(1)
+#     # cycle(nb_gardes = 1, nb_cma_gen= 40, len_cma_pop = 10,cma_max_steps = 300, cma_sigma0 = 1) 
+#     #cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 10,cma_max_steps = 300, cma_sigma0 = 1) 
+
+#     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
+#     best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
+#     gen_counter_final = 3
+#     popsize_final = 20
+#     gen_counter_final = 200
+#     max_steps_final = 300
+
+#SIMU4
+ #4 individus
+    # cycle(nb_gardes = 1, nb_cma_gen= 10,  len_cma_pop= 50, cma_max_steps = 100, cma_sigma0 = 5) 
+    # printer(0)
+    # # cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 15,cma_max_steps = 100, cma_sigma0 = 1.5) 
+    # # printer(1)
     
-#     iterations_morpho = 3 # Number of iterations for the morpho evolution
-#     morpho_popsize = 30 # Population size for morpho evolution
-    
-#     cma_gen_counter = 20 # Number of generations for CMA-ES
-#     cma_popsize = 5 # Population size for CMA-ES
-#     cma_max_steps = 200 # Number of steps for CMA-ES
-#     cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-#     nb_elites = 5 # Proportion of elites to keep
-#     tournament_size = 7 # Size of the tournament for selection
-
-#     cma_gen_counter_final = 30 # Number of generations for final CMA-ES
-#     cma_popsize_final = 30 # Population size for final CMA-ES
-#     cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-#     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-#     proba_mutate_elites = 7/25 # Probability of mutation for elites
-#     proba_mutate_tournament = 7/25 # Probability of mutation for tournament selection
-
-  #PARAMETRES
-    # nb_sim = 4
-    
-    # iterations_morpho = 6 # Number of iterations for the morpho evolution
-    # morpho_popsize = 30 # Population size for morpho evolution
-    
-    # cma_gen_counter = 10 # Number of generations for CMA-ES
-    # cma_popsize = 5 # Population size for CMA-ES
-    # cma_max_steps = 200 # Number of steps for CMA-ES
-    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 5 # Proportion of elites to keep
-    # tournament_size = 7 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 67 # Number of generations for final CMA-ES
-    # cma_popsize_final = 15 # Population size for final CMA-ES
-    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 7/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 7/25 # Probability of mutation for tournament selection
-
-    #  nb_sim = 5
-    
-    # iterations_morpho = 6 # Number of iterations for the morpho evolution
-    # morpho_popsize = 30 # Population size for morpho evolution
-    
-    # cma_gen_counter = 10 # Number of generations for CMA-ES
-    # cma_popsize = 5 # Population size for CMA-ES
-    # cma_max_steps = 200 # Number of steps for CMA-ES
-    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 15 # Proportion of elites to keep
-    # tournament_size = 4 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 67 # Number of generations for final CMA-ES
-    # cma_popsize_final = 15 # Population size for final CMA-ES
-    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 5/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 8/25 # Probability of mutation for tournament selection
-
-# nb_sim = 6
-#     os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
-    
-#     iterations_morpho = 6 # Number of iterations for the morpho evolution
-#     morpho_popsize = 30 # Population size for morpho evolution
-    
-#     cma_gen_counter = 10 # Number of generations for CMA-ES
-#     cma_popsize = 5 # Population size for CMA-ES
-#     cma_max_steps = 200 # Number of steps for CMA-ES
-#     cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-#     nb_elites = 5 # Proportion of elites to keep
-#     tournament_size = 6 # Size of the tournament for selection
-
-#     cma_gen_counter_final = 67 # Number of generations for final CMA-ES
-#     cma_popsize_final = 15 # Population size for final CMA-ES
-#     cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-#     cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-#     proba_mutate_elites = 7/25 # Probability of mutation for elites
-#     proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
-    
-
-    #    nb_sim = 7
-    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
-    
-    # iterations_morpho = 1 # Number of iterations for the morpho evolution
-    # morpho_popsize = 150 # Population size for morpho evolution
-    
-    # cma_gen_counter = 15 # Number of generations for CMA-ES
-    # cma_popsize = 5 # Population size for CMA-ES
-    # cma_max_steps = 200 # Number of steps for CMA-ES
-    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 5 # Proportion of elites to keep
-    # tournament_size = 6 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 67  # Number of generations for final CMA-ES
-    # cma_popsize_final = 15 # Population size for final CMA-ES
-    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 10/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
-    
-    # #PARAMETRES
-    # nb_sim = 7.1
-    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
-    
-    # iterations_morpho = 1 # Number of iterations for the morpho evolution
-    # morpho_popsize = 106 # Population size for morpho evolution
-    
-    # cma_gen_counter = 15 # Number of generations for CMA-ES
-    # cma_popsize = 5 # Population size for CMA-ES
-    # cma_max_steps = 200 # Number of steps for CMA-ES
-    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 5 # Proportion of elites to keep
-    # tournament_size = 6 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 100 # Number of generations for final CMA-ES
-    # cma_popsize_final = 20 # Population size for final CMA-ES
-    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 10/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
-    
-    #  #PARAMETRES
-    # nb_sim = 7
-    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
-    
-    # iterations_morpho = 3 # Number of iterations for the morpho evolution
-    # morpho_popsize = 40 # Population size for morpho evolution
-    
-    # cma_gen_counter = 10 # Number of generations for CMA-ES
-    # cma_popsize = 5 # Population size for CMA-ES
-    # cma_max_steps = 250 # Number of steps for CMA-ES
-    # cma_sigma0 = 1 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 14 # Proportion of elites to keep
-    # tournament_size = 15 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 200 # Number of generations for final CMA-ES
-    # cma_popsize_final = 20 # Population size for final CMA-ES
-    # cma_max_steps_final = 500 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 0.3 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 10/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 10/25 # Probability of mutation for tournament selection
-    
-    #  #PARAMETRES
-    # nb_sim = 8
-    # os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
-    
-    # iterations_morpho = 4 # Number of iterations for the morpho evolution
-    # morpho_popsize = 15 # Population size for morpho evolution
-    
-    # cma_gen_counter = 33 # Number of generations for CMA-ES
-    # cma_popsize = 10 # Population size for CMA-ES
-    # cma_max_steps = 250 # Number of steps for CMA-ES
-    # cma_sigma0 = 2 # Initial standard deviation for CMA-ES
-
-    # nb_elites = 5 # Proportion of elites to keep
-    # tournament_size = 5 # Size of the tournament for selection
-
-    # cma_gen_counter_final = 200 # Number of generations for final CMA-ES
-    # cma_popsize_final = 20 # Population size for final CMA-ES
-    # cma_max_steps_final = 500 # Number of steps for final CMA-ES 
-    # cma_sigma0_final = 1 # Initial standard deviation for final CMA-ES
-
-    # proba_mutate_elites = 7/25 # Probability of mutation for elites
-    # proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
-    # proba_mutate_inital = 10/25 # Probability of mutation for initial morpho
-    
-    
+    # gen_counter_final = 3
+    # popsize_final = 20
+    # gen_counter_final = 200
+    # max_steps_final = 300
