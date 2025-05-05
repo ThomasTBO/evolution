@@ -274,8 +274,8 @@ def save_solution_cma(genes, fitness, cfg, name="project/solutions/solution.json
 
 import morpho
 
-def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes=None):
-
+def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes=None, show_fitness=False):
+    global seed
     config = {
         "env_name": "Thrower-v0",
         "robot": robot,
@@ -293,7 +293,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
     es = cma.CMAEvolutionStrategy(
         x0=genes,  # Initial mean (e.g., 2D search space)
         sigma0 = sigma0,  # Initial standard deviation
-        inopts={'popsize': popsize, 'verb_disp': 1}  # Options (e.g., population size, verbosity)
+        inopts={'popsize': popsize, 'verb_disp': 1, 'seed' : seed}, # Options (e.g., population size, verbosity)
+       
     )
     gen_counter = 0
     max_fitnesses = []
@@ -305,6 +306,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
         if es.stop() : break
         gen_counter +=1
         max_fitnesses.append(-es.result.fbest)
+    if show_fitness:
+        return es.result.xbest, -es.result.fbest, cfg, max_fitnesses
     return es.result.xbest, -es.result.fbest, cfg
    
 if __name__ == "__main__":
@@ -329,29 +332,30 @@ if __name__ == "__main__":
    
 
     #PARAMETRES
-    nb_sim = 8
+    nb_sim = 73
     os.makedirs(f"project/solutions/ThrowerEvol/Simu{nb_sim}", exist_ok=True)
+
+    seed = 1
+
+    iterations_morpho = 1 # Number of iterations for the morpho evolution
+    morpho_popsize = 106 # Population size for morpho evolution
     
-    iterations_morpho = 4 # Number of iterations for the morpho evolution
-    morpho_popsize = 15 # Population size for morpho evolution
-    
-    cma_gen_counter = 33 # Number of generations for CMA-ES
-    cma_popsize = 10 # Population size for CMA-ES
-    cma_max_steps = 250 # Number of steps for CMA-ES
-    cma_sigma0 = 2 # Initial standard deviation for CMA-ES
+    cma_gen_counter = 15 # Number of generations for CMA-ES
+    cma_popsize = 5 # Population size for CMA-ES
+    cma_max_steps = 200 # Number of steps for CMA-ES
+    cma_sigma0 = 1 # Initial standard deviation for CMA-ES
 
     nb_elites = 5 # Proportion of elites to keep
-    tournament_size = 5 # Size of the tournament for selection
+    tournament_size = 6 # Size of the tournament for selection
 
-    cma_gen_counter_final = 200 # Number of generations for final CMA-ES
+    cma_gen_counter_final = 100 # Number of generations for final CMA-ES
     cma_popsize_final = 20 # Population size for final CMA-ES
-    cma_max_steps_final = 500 # Number of steps for final CMA-ES 
-    cma_sigma0_final = 1 # Initial standard deviation for final CMA-ES
+    cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    cma_sigma0_final = 0.5 # Initial standard deviation for final CMA-ES
 
-    proba_mutate_elites = 7/25 # Probability of mutation for elites
+    proba_mutate_elites = 10/25 # Probability of mutation for elites
     proba_mutate_tournament = 9/25 # Probability of mutation for tournament selection
-    proba_mutate_inital = 10/25 # Probability of mutation for initial morpho
-    
+    proba_mutate_inital = proba_mutate_elites
     
     previous_best = thrower0
     previous_best_fitness = 0 
@@ -407,7 +411,7 @@ if __name__ == "__main__":
     #Entrainement CMA-ES sur la meilleure morpho
     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
     best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
-    genes, fitness, cfg = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0])
+    genes, fitness, cfg, list_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0], show_fitness=True)
     print(f"Final training:")
     print(f"  Best fitness: {fitness}")
     print(f"  Best morphology:\n{best_robot}")
@@ -417,7 +421,9 @@ if __name__ == "__main__":
     name = f"ThrowerEvol/Simu{nb_sim}/ThrowerFinal"
     save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
     create_gif_cma(name= name, max_steps=cma_max_steps_final)
-    previous_best = best_robot
+    plt.plot(range(1, cma_gen_counter_final+1), list_fitness)
+    plt.savefig(f"project/solutions/ThrowerEvol/Simu{nb_sim}/ThrowerFinal.png")
+    plt.show()
         
         
         # best_robot_key, (best_trained, fitness, best_cfg) = sorted_robots[0]
