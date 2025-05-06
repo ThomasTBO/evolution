@@ -97,6 +97,29 @@ def mutate_climber(morphology, probability=1/25):
 
     return new_morphology
 
+def mutate_climber_2(morphology, probability=1/25):
+    """
+    Mutate the morphology matrix (5x5) based on the given rules:
+    - If the square is non-zero, mutate it to a value between 1 and 5 with a probability of 1/25.
+    - If the square is zero and has a non-zero adjacent square, mutate it to a value between 0 and 5 with a probability of 1/25.
+    """
+    rows, cols = morphology.shape
+    new_morphology = morphology.copy()
+     #PROBABILITY 1/n
+
+    for i in range(rows):
+        for j in range(cols):
+            if np.random.rand() < probability: 
+                if morphology[i][j] == 1 :
+                    new_morphology[i][j] = 2 
+                elif morphology[i][j] == 2 :
+                    new_morphology[i][j] = 1
+                elif morphology[i][j] == 3 :
+                    new_morphology[i][j] = 4
+                elif morphology[i][j] == 4 :
+                    new_morphology[i][j] = 3    
+    return new_morphology
+
 # morphology = np.array([
 #     [3, 3, 3, 3, 3],
 #     [3, 3, 3, 3, 3],
@@ -105,7 +128,7 @@ def mutate_climber(morphology, probability=1/25):
 #     [3, 3, 3, 3, 3]
 # ])
 
-# new_morphology = mutate_climber(morphology, 25/25)
+# new_morphology = mutate_climber_2(morphology, 25/25)
 # print("Original Morphology:")
 # print(morphology)
 # print("Mutated Morphology:")
