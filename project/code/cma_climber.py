@@ -207,42 +207,42 @@ if __name__ == "__main__":
     ])
 
     climber1 = np.array([
-        [3, 3, 3, 3, 3],
-        [0, 0, 4, 0, 0],
-        [0, 0, 4, 0, 0],
-        [3, 3, 3, 3, 3],
+        [3, 2, 3, 2, 3],
+        [0, 4, 1, 4, 0],
+        [0, 2, 4, 2, 0],
+        [3, 3, 1, 3, 3],
         [0, 0, 2, 0, 0]
     ])
 
 
     #PARAMETRES
-    nb_sim = 8
+    nb_sim = 14
     os.makedirs(f"project/solutions/ClimberEvol/Simu{nb_sim}", exist_ok=True)
 
     seed=1
     
-    iterations_morpho = 1 # Number of iterations for the morpho evolution
-    morpho_popsize = 1 # Population size for morpho evolution
+    iterations_morpho = 10 # Number of iterations for the morpho evolution
+    morpho_popsize = 5 # Population size for morpho evolution
     
-    cma_gen_counter = 10 # Number of generations for CMA-ES
-    cma_popsize = 10 # Population size for CMA-ES
+    cma_gen_counter = 30 # Number of generations for CMA-ES
+    cma_popsize = 5 # Population size for CMA-ES
     cma_max_steps = 100 # Number of steps for CMA-ES
-    cma_sigma0 = 3 # Initial standard deviation for CMA-ES
-    nb_elites = 3 # Proportion of elites to keep
+    cma_sigma0 = 11 # Initial standard deviation for CMA-ES
+    nb_elites = 2 # Proportion of elites to keep
     tournament_size = 3 # Size of the tournament for selection
 
-    cma_gen_counter_final = 10 # Number of generations for final CMA-ES
-    cma_popsize_final = 50 # Population size for final CMA-ES
-    cma_max_steps_final = 200 # Number of steps for final CMA-ES 
-    cma_sigma0_final = 10 # Initial standard deviation for final CMA-ES
+    # cma_gen_counter_final = 10 # Number of generations for final CMA-ES
+    # cma_popsize_final = 50 # Population size for final CMA-ES
+    # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    # cma_sigma0_final = 10 # Initial standard deviation for final CMA-ES
 
-    cma_gen_counter_final_2 = 50 # Number of generations for final CMA-ES
-    cma_popsize_final_2 = 10 # Population size for final CMA-ES
-    cma_max_steps_final_2 = 200 # Number of steps for final CMA-ES 
-    cma_sigma0_final_2 = 1 # Initial standard deviation for final CMA-ES
+    cma_gen_counter_final_2 = 125 # Number of generations for final CMA-ES
+    cma_popsize_final_2 = 30 # Population size for final CMA-ES
+    cma_max_steps_final_2 = 500 # Number of steps for final CMA-ES 
+    cma_sigma0_final_2 = 10 # Initial standard deviation for final CMA-ES
 
-    proba_mutate_elites = 8/25 # Probability of mutation for elites
-    proba_mutate_tournament = 8/25 # Probability of mutation for tournament selection
+    proba_mutate_elites = 1/25 # Probability of mutation for elites
+    proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
     proba_mutate_inital = 15/25 # Probability of mutation for initial morpho
 
     
@@ -303,8 +303,8 @@ if __name__ == "__main__":
     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
     best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
 
-    genes, fitness, cfg, max_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0], show_fitness=True)
-    robots_memory[best_robot_key] = (genes, fitness, cfg) 
+    # genes, fitness, cfg, max_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0], show_fitness=True)
+    # robots_memory[best_robot_key] = (genes, fitness, cfg) 
 
     genes, fitness, cfg, max_fitness2 = run_cma_par(best_robot, gen_counter=cma_gen_counter_final_2, max_steps=cma_max_steps_final_2, popsize=cma_popsize_final_2, sigma0=cma_sigma0_final_2, genes=robots_memory[best_robot_key][0], show_fitness=True)
     robots_memory[best_robot_key] = (genes, fitness, cfg) 
@@ -318,14 +318,14 @@ if __name__ == "__main__":
     name = f"ClimberEvol/Simu{nb_sim}/ClimberFinal"
     save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
 
-    plt.plot(range(1, cma_gen_counter_final+1), max_fitness)
-    plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
-    plt.figure()
+    # plt.plot(range(1, cma_gen_counter_final+1), max_fitness)
+    # plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
+    # plt.figure()
     plt.plot(range(1, cma_gen_counter_final_2+1), max_fitness2)
     plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution2.png")
     
     
-    create_gif_cma(name= name, max_steps=cma_max_steps_final)
+    create_gif_cma(name= name, max_steps=cma_max_steps_final_2)
     plt.show()
         
         
@@ -397,3 +397,9 @@ if __name__ == "__main__":
     # proba_mutate_elites = 8/25 # Probability of mutation for elites
     # proba_mutate_tournament = 8/25 # Probability of mutation for tournament selection
     # proba_mutate_inital = 15/25 # Probability of mutation for initial morpho
+
+    # #12
+    #  cma_gen_counter_final_2 = 100 # Number of generations for final CMA-ES
+    # cma_popsize_final_2 = 15 # Population size for final CMA-ES
+    # cma_max_steps_final_2 = 300 # Number of steps for final CMA-ES 
+    # cma_sigma0_final_2 = 50 # Initial standard deviation for final CMA-ES
