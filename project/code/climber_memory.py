@@ -1,8 +1,6 @@
-
 from environnement import *
 import cma
 import json
-from gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma
@@ -202,7 +200,7 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
     if show_fitness:
         return es.result.xbest, -es.result.fbest, cfg, max_fitnesses
     return es.result.xbest, -es.result.fbest, cfg
-   
+
 if __name__ == "__main__":
     
     climber0 = np.array([
@@ -229,13 +227,15 @@ if __name__ == "__main__":
         [3, 1, 0, 1, 3]
     ])
 
-    climber1 = np.array([
+    climber3 = np.array([
         [3, 2, 3, 2, 3],
         [0, 4, 1, 4, 0],
         [0, 2, 4, 2, 0],
         [3, 3, 1, 3, 3],
         [0, 0, 2, 0, 0]
     ])
+
+    
 
 
     #PARAMETRES
@@ -278,12 +278,12 @@ if __name__ == "__main__":
     for i in range(iterations_morpho): 
         pop = new_gen.copy()
         new_gen.clear() 
-        new_gen = [previous_best]
+        new_gen = []
 
         #Evaluation
         for robot in pop:
             robot_key = tuple(map(tuple, robot)) #Une morpho = une clé
-
+            
             if robot_key not in robots_memory:
                 genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
                 robots_memory[robot_key] = (genes, fitness, cfg) 
@@ -297,10 +297,12 @@ if __name__ == "__main__":
         #Selection elite & mutations
         best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
         best_robot = np.array(best_robot_key)
-        new_gen = new_gen + [morpho.mutate_climber_2(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
+        new_gen = [morpho.mutate_climber_2(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
         for robot in new_gen:
-            robot_key = tuple(map(tuple, robot))
-            robots_memory[robot_key] = (robots_memory[best_robot_key][0], -10, robots_memory[best_robot_key][2]) 
+            if not(np.array_equal(robot, best_robot)):
+                robot_key = tuple(map(tuple, robot))
+                robots_memory[robot_key] = (robots_memory[best_robot_key][0], -10, robots_memory[best_robot_key][2]) 
+        new_gen.append(best_robot)
 
         #Selection tournament & mutations
         while len(new_gen) < morpho_popsize:
@@ -311,9 +313,10 @@ if __name__ == "__main__":
             winner = robots[np.argmax(fitness)] # Select the best robot from the tournament
             winner_key = tuple(map(tuple, winner))
             new_robot = morpho.mutate_climber_2(winner, proba_mutate_tournament)
-            new_robot_key = tuple(map(tuple, new_robot))
             new_gen.append(new_robot) # Mutate the winner to create a new robot
-            robots_memory[new_robot_key] =  (robots_memory[winner_key][0], -10, robots_memory[winner_key][2]) 
+            if not(np.array_equal(new_robot, winner)):
+                new_robot_key = tuple(map(tuple, new_robot))
+                robots_memory[new_robot_key] =  (robots_memory[winner_key][0], -10, robots_memory[winner_key][2]) 
         
         print(f"Iteration {i + 1}:")
         print(f"  Best fitness: {best_fitness}")

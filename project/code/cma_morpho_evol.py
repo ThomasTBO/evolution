@@ -2,10 +2,10 @@
 from environnement import *
 import cma
 import json
-from gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma
+import os
 
 class Network(nn.Module):
     def __init__(self, n_in, h_size, n_out):
@@ -180,8 +180,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
         x0=genes,  # Initial mean (e.g., 2D search space)
         sigma0 = sigma0,  # Initial standard deviation
         inopts={'popsize': popsize, 'verb_disp': 1, "seed" : seed} # Options (e.g., population size, verbosity)
-       
     )
+
     gen_counter = 0
     max_fitnesses = []
     for generation in range(config["generations"]):
@@ -196,6 +196,8 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
         return es.result.xbest, -es.result.fbest, cfg, max_fitnesses
     return es.result.xbest, -es.result.fbest, cfg
    
+
+
 if __name__ == "__main__":
     
     walker0 = np.array([
@@ -206,19 +208,10 @@ if __name__ == "__main__":
     [3, 3, 0, 3, 3]
     ])
 
-    walker00 = np.array([
-    [3, 3, 3, 3, 3],
-    [3, 0, 0, 0, 3],
-    [3, 0, 0, 0, 3],
-    [3, 0, 0, 0, 3],
-    [3, 0, 0, 0, 3]
-    ])
-
     #PARAMETRES
-    nb_sim = 63
-    import os
+    nb_sim = 63 #Pour enregistrement du fichier
+    
     os.makedirs(f"project/solutions/MorphoEvol/Simu{nb_sim}", exist_ok=True)
-
     seed = 2
 
     iterations_morpho = 2 # Number of iterations for the morpho evolution
@@ -239,8 +232,9 @@ if __name__ == "__main__":
 
     proba_mutate_elites = 3/25 # Probability of mutation for elites
     proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
-    proba_mutate_init = 10/25 
+    proba_mutate_init = 10/25 # Probability of mutation for initial population
 
+    #EXECUTION
     previous_best = walker0
     previous_best_fitness = 0 
     new_gen = [morpho.mutate(walker0, probability = proba_mutate_init ) for _ in range(morpho_popsize-1)] + [walker0] 
@@ -278,6 +272,7 @@ if __name__ == "__main__":
             winner = robots[np.argmin(fitness)] # Select the best robot from the tournament
             new_gen.append(morpho.mutate(winner, proba_mutate_tournament)) # Mutate the winner to create a new robot
         
+        #Print
         print(f"Iteration {i + 1}:")
         print(f"  Best fitness: {best_fitness}")
         print(f"  Best morphology:\n{best_robot}")
@@ -292,8 +287,8 @@ if __name__ == "__main__":
 
 
     #Entrainement CMA-ES sur la meilleure morpho
-    # best_robot_key, (best_trained, best_fitness, best_cfg) = robots_memory[0]
-    # best = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
+    best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
+    best_robot = np.array(best_robot_key)  
     genes, fitness, cfg , fitness_list= run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, show_fitness=True)
     print(f"Final training:")
     print(f"  Best fitness: {fitness}")

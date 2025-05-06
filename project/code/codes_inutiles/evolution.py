@@ -1,4 +1,4 @@
-from algo import *
+from project.code.codes_inutiles.algo import *
 
 def ES(config):
     cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims

@@ -1,8 +1,6 @@
-
 from environnement import *
 import cma
 import json
-from gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma
@@ -222,7 +220,7 @@ if __name__ == "__main__":
 
 
     #PARAMETRES
-    nb_sim = 4
+    nb_sim = 100
     os.makedirs(f"project/solutions/ClimberEvol/Simu{nb_sim}", exist_ok=True)
     
     # iterations_morpho = 3 # Number of iterations for the morpho evolution
@@ -289,7 +287,7 @@ if __name__ == "__main__":
         save_solution_cma(best_trained, best_fitness, best_cfg, name="project/solutions/" + name + ".json")
         create_gif_cma(name= name, max_steps=500)
 
-    #4 individus
+    #CYCLES ENTONNOIRS
     cycle(nb_gardes = 1, nb_cma_gen= 10,  len_cma_pop= 50, cma_max_steps = 100, cma_sigma0 = 5) 
     printer(0)
     # cycle(nb_gardes = 1, nb_cma_gen= 50, len_cma_pop = 15,cma_max_steps = 100, cma_sigma0 = 1.5) 
@@ -310,23 +308,8 @@ if __name__ == "__main__":
     plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
     plt.show()  
 
-    
-    
-    
-        
-        
-        # best_robot_key, (best_trained, fitness, best_cfg) = sorted_robots[0]
-        # best = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
+   
 
-        # print(f"Iteration {i + 1}:")
-        # print(f"  Best fitness: {fitness}")
-        # print(f"  Best solution:\n{best}")
-
-        # # Sauvegarder la meilleure solution
-        # name = "WalkerEvo1_" + str(i + 1)
-        # save_solution_cma(best_trained, fitness, best_cfg, name="project/solutions/MorphoEvol/" + name + ".json")
-        # create_gif_cma(name="MorphoEvol/"+ name)
-        
 
 #MEMOIRE SIMULATION
 

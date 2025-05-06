@@ -1,8 +1,6 @@
-
 from environnement import *
 import cma
 import json
-from gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma
@@ -207,109 +205,109 @@ if __name__ == "__main__":
     ])
 
     climber1 = np.array([
-        [3, 2, 3, 2, 3],
-        [0, 4, 1, 4, 0],
-        [0, 2, 4, 2, 0],
-        [3, 3, 1, 3, 3],
-        [0, 0, 2, 0, 0]
+    [1, 1, 3, 3, 0],
+    [4, 2, 4, 4, 4],
+    [0, 4, 2, 4, 1],
+    [0, 4, 4, 4, 1],
+    [0, 4, 0, 3, 0]
     ])
 
 
     #PARAMETRES
-    nb_sim = 14
+    nb_sim = 15
     os.makedirs(f"project/solutions/ClimberEvol/Simu{nb_sim}", exist_ok=True)
 
     seed=1
     
-    iterations_morpho = 10 # Number of iterations for the morpho evolution
-    morpho_popsize = 5 # Population size for morpho evolution
+    iterations_morpho = 0 # Number of iterations for the morpho evolution
+    # morpho_popsize = 5 # Population size for morpho evolution
     
-    cma_gen_counter = 30 # Number of generations for CMA-ES
-    cma_popsize = 5 # Population size for CMA-ES
-    cma_max_steps = 100 # Number of steps for CMA-ES
-    cma_sigma0 = 11 # Initial standard deviation for CMA-ES
-    nb_elites = 2 # Proportion of elites to keep
-    tournament_size = 3 # Size of the tournament for selection
+    # cma_gen_counter = 30 # Number of generations for CMA-ES
+    # cma_popsize = 5 # Population size for CMA-ES
+    # cma_max_steps = 100 # Number of steps for CMA-ES
+    # cma_sigma0 = 11 # Initial standard deviation for CMA-ES
+    # nb_elites = 2 # Proportion of elites to keep
+    # tournament_size = 3 # Size of the tournament for selection
 
     # cma_gen_counter_final = 10 # Number of generations for final CMA-ES
     # cma_popsize_final = 50 # Population size for final CMA-ES
     # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
     # cma_sigma0_final = 10 # Initial standard deviation for final CMA-ES
 
-    cma_gen_counter_final_2 = 125 # Number of generations for final CMA-ES
-    cma_popsize_final_2 = 30 # Population size for final CMA-ES
+    cma_gen_counter_final_2 = 3 # Number of generations for final CMA-ES
+    cma_popsize_final_2 = 3 # Population size for final CMA-ES
     cma_max_steps_final_2 = 500 # Number of steps for final CMA-ES 
-    cma_sigma0_final_2 = 10 # Initial standard deviation for final CMA-ES
-
-    proba_mutate_elites = 1/25 # Probability of mutation for elites
-    proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
-    proba_mutate_inital = 15/25 # Probability of mutation for initial morpho
+    cma_sigma0_final_2 = 40 # Initial standard deviation for final CMA-ES
+    best_robot = climber1
+    # proba_mutate_elites = 1/25 # Probability of mutation for elites
+    # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
+    # proba_mutate_inital = 15/25 # Probability of mutation for initial morpho
 
     
-    previous_best = climber1
-    previous_best_fitness = 0 
-    new_gen = [morpho.mutate_climber(climber1, proba_mutate_inital) for _ in range(morpho_popsize-1)] + [climber1]
-     # Initial population of morphologies
-    robots_memory = {}
-    for i in range(iterations_morpho): 
-        pop = new_gen.copy()
-        new_gen.clear() 
-        new_gen = [previous_best]
+    # previous_best = climber1
+    # previous_best_fitness = 0 
+    # # new_gen = [morpho.mutate_climber(climber1, proba_mutate_inital) for _ in range(morpho_popsize-1)] + [climber1]
+    #  # Initial population of morphologies
+    # robots_memory = {}
+    # for i in range(iterations_morpho): 
+    #     pop = new_gen.copy()
+    #     new_gen.clear() 
+    #     new_gen = [previous_best]
 
-        #Evaluation
-        for robot in pop:
-            robot_key = tuple(map(tuple, robot)) #Une morpho = une clé
+    #     #Evaluation
+    #     for robot in pop:
+    #         robot_key = tuple(map(tuple, robot)) #Une morpho = une clé
 
-            if robot_key not in robots_memory:
-                genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
-                robots_memory[robot_key] = (genes, fitness, cfg) 
+    #         if robot_key not in robots_memory:
+    #             genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
+    #             robots_memory[robot_key] = (genes, fitness, cfg) 
 
-            # else : 
-            #     genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
-            #     if fitness > robots_memory[robot_key][1]:
-            #         robots_memory[robot_key] = (genes, fitness, cfg) 
+    #         # else : 
+    #         #     genes, fitness, cfg = run_cma_par(robot, gen_counter=cma_gen_counter, max_steps=cma_max_steps, popsize=cma_popsize, sigma0=cma_sigma0)
+    #         #     if fitness > robots_memory[robot_key][1]:
+    #         #         robots_memory[robot_key] = (genes, fitness, cfg) 
 
-        #Selection elite & mutations
-        best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
-        best_robot = np.array(best_robot_key)
-        new_gen = [morpho.mutate_climber(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
+    #     #Selection elite & mutations
+    #     best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
+    #     best_robot = np.array(best_robot_key)
+    #     new_gen = [morpho.mutate_climber(best_robot, probability = proba_mutate_elites) for _ in range(nb_elites)] # Mutate the best robots to create new ones
         
 
-        #Selection tournament & mutations
-        while len(new_gen) < morpho_popsize:
-            rng = np.random.default_rng()
-            tournament = rng.choice(len(pop), size=tournament_size)
-            robots = [pop[i] for i in tournament] 
-            fitness = [robots_memory[tuple(map(tuple, robot))][1] for robot in robots]
-            winner = robots[np.argmin(fitness)] # Select the best robot from the tournament
-            new_gen.append(morpho.mutate_climber(winner, proba_mutate_tournament)) # Mutate the winner to create a new robot
+    #     #Selection tournament & mutations
+    #     while len(new_gen) < morpho_popsize:
+    #         rng = np.random.default_rng()
+    #         tournament = rng.choice(len(pop), size=tournament_size)
+    #         robots = [pop[i] for i in tournament] 
+    #         fitness = [robots_memory[tuple(map(tuple, robot))][1] for robot in robots]
+    #         winner = robots[np.argmin(fitness)] # Select the best robot from the tournament
+    #         new_gen.append(morpho.mutate_climber(winner, proba_mutate_tournament)) # Mutate the winner to create a new robot
         
-        print(f"Iteration {i + 1}:")
-        print(f"  Best fitness: {best_fitness}")
-        print(f"  Best morphology:\n{best_robot}")
-        if np.array_equal(previous_best, best_robot) and best_fitness == previous_best_fitness:
-            print("Same morphology as previous best.")
-        else:
-            name = f"ClimberEvol/Simu{nb_sim}/Climber{i+1}"
-            save_solution_cma(best_trained, best_fitness, best_cfg, name="project/solutions/" + name + ".json")
-            create_gif_cma(name= name)
-            previous_best = best_robot
-            previous_best_fitness = best_fitness
+    #     print(f"Iteration {i + 1}:")
+    #     print(f"  Best fitness: {best_fitness}")
+    #     print(f"  Best morphology:\n{best_robot}")
+    #     if np.array_equal(previous_best, best_robot) and best_fitness == previous_best_fitness:
+    #         print("Same morphology as previous best.")
+    #     else:
+    #         name = f"ClimberEvol/Simu{nb_sim}/Climber{i+1}"
+    #         save_solution_cma(best_trained, best_fitness, best_cfg, name="project/solutions/" + name + ".json")
+    #         create_gif_cma(name= name)
+    #         previous_best = best_robot
+    #         previous_best_fitness = best_fitness
     
         
 
-    # Final training
+    # # Final training
 
-    best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
-    best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
+    # best_robot_key, (best_trained, best_fitness, best_cfg) = max(robots_memory.items(), key=lambda x: x[1][1])
+    # best_robot = np.array(best_robot_key)  # Convertir la clé (tuple) en matrice NumPy
 
-    # genes, fitness, cfg, max_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0], show_fitness=True)
+    # # genes, fitness, cfg, max_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, genes=robots_memory[best_robot_key][0], show_fitness=True)
+    # # robots_memory[best_robot_key] = (genes, fitness, cfg) 
+
+    # genes, fitness, cfg, max_fitness2 = run_cma_par(best_robot, gen_counter=cma_gen_counter_final_2, max_steps=cma_max_steps_final_2, popsize=cma_popsize_final_2, sigma0=cma_sigma0_final_2, genes=robots_memory[best_robot_key][0], show_fitness=True)
     # robots_memory[best_robot_key] = (genes, fitness, cfg) 
 
-    genes, fitness, cfg, max_fitness2 = run_cma_par(best_robot, gen_counter=cma_gen_counter_final_2, max_steps=cma_max_steps_final_2, popsize=cma_popsize_final_2, sigma0=cma_sigma0_final_2, genes=robots_memory[best_robot_key][0], show_fitness=True)
-    robots_memory[best_robot_key] = (genes, fitness, cfg) 
-
-
+    genes, fitness, cfg, max_fitness = run_cma_par(best_robot, gen_counter=cma_gen_counter_final, max_steps=cma_max_steps_final, popsize=cma_popsize_final, sigma0=cma_sigma0_final, show_fitness=True)
 
     print(f"Final training:")
     print(f"  Best fitness: {fitness}")
@@ -318,14 +316,14 @@ if __name__ == "__main__":
     name = f"ClimberEvol/Simu{nb_sim}/ClimberFinal"
     save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
 
-    # plt.plot(range(1, cma_gen_counter_final+1), max_fitness)
-    # plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
+    plt.plot(range(1, cma_gen_counter_final+1), max_fitness)
+    plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")
     # plt.figure()
-    plt.plot(range(1, cma_gen_counter_final_2+1), max_fitness2)
-    plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution2.png")
+    # plt.plot(range(1, cma_gen_counter_final_2+1), max_fitness2)
+    # plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution2.png")
     
     
-    create_gif_cma(name= name, max_steps=cma_max_steps_final_2)
+    create_gif_cma(name= name, max_steps=cma_max_steps_final)
     plt.show()
         
         

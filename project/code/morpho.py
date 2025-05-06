@@ -1,11 +1,6 @@
 
 from environnement import *
-import cma
-import json
-from gif import create_gif
 from imports import *
-from torch import sigmoid
-from gif_cma import create_gif_cma
 from scipy.ndimage import label
 
 def is_connected(matrix):
@@ -120,16 +115,57 @@ def mutate_climber_2(morphology, probability=1/25):
                     new_morphology[i][j] = 3    
     return new_morphology
 
-# morphology = np.array([
+# morphology2 = np.array([
 #     [3, 3, 3, 3, 3],
 #     [3, 3, 3, 3, 3],
 #     [3, 3, 3, 3, 3],
 #     [3, 3, 3, 3, 3],
 #     [3, 3, 3, 3, 3]
 # ])
+# morphology = np.array([
+#     [1, 1, 3, 1, 1],
+#     [1, 1, 0, 1, 1],
+#     [1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1],
+# ])
 
 # new_morphology = mutate_climber_2(morphology, 25/25)
 # print("Original Morphology:")
 # print(morphology)
 # print("Mutated Morphology:")
-# print(new_morphology)        
+# print(new_morphology)   
+
+# config = {
+#     "env_name": "Climber-v2",
+#     "robot": morphology,
+#     "generations": 10, # To change: increase!
+#     "lambda": 10,
+#     "max_steps": 100, # to change to 500
+#     }
+# from evosim_ray import EvoGymEnv
+# from environnement import *
+# from agents import *
+
+# cfg = get_cfg(config["env_name"], robot=config["robot"]) # Get network dims
+# cfg = {**config, **cfg} # Merge configs
+# # env = EvoGymEnv(cfg["env_name"], robot=cfg["robot"])
+
+
+# ex_agent = Agent(Network, cfg)
+# genes = ex_agent.genes
+# print(genes.shape)
+
+# config2 = {
+#     "env_name": "Climber-v2",
+#     "robot": new_morphology,
+#     "generations": 10, # To change: increase!
+#     "lambda": 10,
+#     "max_steps": 100, # to change to 500
+#     }
+# cfg2 = get_cfg(config2["env_name"], robot=config2["robot"]) # Get network dims
+# cfg2 = {**config2, **cfg2} # Merge configs
+# # env = EvoGymEnv(cfg2["env_name"], robot=cfg2["robot"])
+# ex_agent2 = Agent(Network, cfg2)
+# genes2 = ex_agent2.genes
+# print(genes2.shape)

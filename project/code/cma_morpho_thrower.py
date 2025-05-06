@@ -2,7 +2,7 @@
 from environnement import *
 import cma
 import json
-from gif import create_gif
+from project.code.codes_inutiles.gif import create_gif
 from imports import *
 from torch import sigmoid
 from gif_cma import create_gif_cma

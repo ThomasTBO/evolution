@@ -1,5 +1,4 @@
 import json
-import time
 import imageio
 from environnement import *
 from agents import *
@@ -33,11 +32,15 @@ def create_gif_cma(name, max_steps=500):
 
 
 def best_walker():
-    name = "project/evaluation/data/BestWalker"
+    name = "project/evaluation/data/Walker/Walker62"
+    create_gif_cma(name=name, max_steps=500)
+    name = "project/evaluation/data/Walker/Walker63"
     create_gif_cma(name=name, max_steps=500)
 
 def best_thrower(): 
-    name = "project/evaluation/data/BestThrower"
+    name = "project/evaluation/data/Thrower/BestThrower"
+    create_gif_cma(name=name, max_steps=500)
+    name = "project/evaluation/data/Thrower/ThrowerFinal"
     create_gif_cma(name=name, max_steps=500)
 
 def best_climber():
@@ -45,6 +48,6 @@ def best_climber():
     create_gif_cma(name=name, max_steps=500)
 
 if __name__ == "__main__":
-    best_walker()
+    #best_walker()
     best_thrower()
     #best_climber()  

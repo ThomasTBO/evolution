@@ -1,8 +1,9 @@
 import json
 import time
 import imageio
-
-from evolution import *
+from imports import *
+from agents import *
+from environnement import *
 
 def create_gif_cma(name, max_steps=500):
     path = "project/solutions/" + name + ".json"

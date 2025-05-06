@@ -2,7 +2,7 @@ import json
 import time
 import imageio
 
-from evolution import *
+from project.code.codes_inutiles.evolution import *
 
 
 def create_gif(path):

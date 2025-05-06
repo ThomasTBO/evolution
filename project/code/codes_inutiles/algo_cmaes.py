@@ -1,9 +1,9 @@
 
-from evolution import *
+from project.code.codes_inutiles.evolution import *
 import cma
 import json
-from gif import create_gif
-from parallelisation import *
+from project.code.codes_inutiles.gif import create_gif
+from project.code.codes_inutiles.parallelisation import *
 
 config = {
     "env_name": "Walker-v0",

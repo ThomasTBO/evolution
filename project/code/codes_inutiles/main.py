@@ -1,6 +1,6 @@
-from evolution import *
+from project.code.codes_inutiles.evolution import *
 import json
-from gif import create_gif
+from project.code.codes_inutiles.gif import create_gif
 
 def save_solution(a, cfg, name="project/solutions/solution.json"):
     save_cfg = {}
