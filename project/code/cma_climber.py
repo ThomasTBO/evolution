@@ -208,7 +208,7 @@ if __name__ == "__main__":
     [1, 1, 3, 3, 0],
     [4, 2, 4, 4, 4],
     [0, 4, 2, 4, 1],
-    [0, 4, 4, 4, 1],
+    [0, 4, 4, 4, 2],
     [0, 4, 0, 3, 0]
     ])
 
@@ -234,10 +234,10 @@ if __name__ == "__main__":
     # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
     # cma_sigma0_final = 10 # Initial standard deviation for final CMA-ES
 
-    cma_gen_counter_final_2 = 3 # Number of generations for final CMA-ES
-    cma_popsize_final_2 = 3 # Population size for final CMA-ES
-    cma_max_steps_final_2 = 500 # Number of steps for final CMA-ES 
-    cma_sigma0_final_2 = 40 # Initial standard deviation for final CMA-ES
+    cma_gen_counter_final = 625 # Number of generations for final CMA-ES
+    cma_popsize_final = 16 # Population size for final CMA-ES
+    cma_max_steps_final = 500 # Number of steps for final CMA-ES 
+    cma_sigma0_final = 40 # Initial standard deviation for final CMA-ES
     best_robot = climber1
     # proba_mutate_elites = 1/25 # Probability of mutation for elites
     # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
