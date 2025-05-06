@@ -144,12 +144,6 @@ def evaluate_env(env, agent, horizon = 500):
         # action = env.action_space.sample()
         action = agent.act(obs)  # Use the agent to get the action
         obs, reward, done, trunc,  info = env.step(action)
-        print(env.get_time())
-        positions = env.pos_at_time(env, counter)
-        ground_threshold = 0.5  # Ajustez cette valeur en fonction de votre environnement
-        contact_detected = any(y <= ground_threshold for x, y in zip(positions[0], positions[1]))
-        if contact_detected : 
-            reward -=1;
         value += reward
     return - value
 
@@ -229,9 +223,9 @@ if __name__ == "__main__":
 
     climber2 = np.array([
         [3, 1, 0, 1, 3],
-        [3, 1, 3, 1, 3],
-        [0, 1, 4, 1, 0],
-        [3, 1, 3, 1, 3],
+        [3, 3, 3, 3, 3],
+        [0, 4, 4, 4, 0],
+        [3, 3, 3, 3, 3],
         [3, 1, 0, 1, 3]
     ])
 
