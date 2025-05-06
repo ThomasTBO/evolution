@@ -190,9 +190,11 @@ def run_cma_par(robot, gen_counter=40, max_steps=500, popsize=20, sigma0=1,genes
         if es.stop() : break
         gen_counter +=1
         max_fitnesses.append(-es.result.fbest)
+        print(-es.result.fbest)
     if show_fitness:
         return es.result.xbest, -es.result.fbest, cfg, max_fitnesses
     return es.result.xbest, -es.result.fbest, cfg
+
    
 if __name__ == "__main__":
     
@@ -214,7 +216,7 @@ if __name__ == "__main__":
 
 
     #PARAMETRES
-    nb_sim = 15
+    nb_sim = 16
     os.makedirs(f"project/solutions/ClimberEvol/Simu{nb_sim}", exist_ok=True)
 
     seed=1
@@ -234,10 +236,10 @@ if __name__ == "__main__":
     # cma_max_steps_final = 200 # Number of steps for final CMA-ES 
     # cma_sigma0_final = 10 # Initial standard deviation for final CMA-ES
 
-    cma_gen_counter_final = 625 # Number of generations for final CMA-ES
-    cma_popsize_final = 16 # Population size for final CMA-ES
-    cma_max_steps_final = 500 # Number of steps for final CMA-ES 
-    cma_sigma0_final = 40 # Initial standard deviation for final CMA-ES
+    cma_gen_counter_final = 1000 # Number of generations for final CMA-ES
+    cma_popsize_final = 5 # Population size for final CMA-ES
+    cma_max_steps_final = 200 # Number of steps for final CMA-ES 
+    cma_sigma0_final = 2 # Initial standard deviation for final CMA-ES
     best_robot = climber1
     # proba_mutate_elites = 1/25 # Probability of mutation for elites
     # proba_mutate_tournament = 3/25 # Probability of mutation for tournament selection
@@ -315,6 +317,7 @@ if __name__ == "__main__":
 
     name = f"ClimberEvol/Simu{nb_sim}/ClimberFinal"
     save_solution_cma(genes, fitness, cfg, name="project/solutions/" + name + ".json")
+    create_gif_cma(name= name, max_steps=cma_max_steps_final)
 
     plt.plot(range(1, cma_gen_counter_final+1), max_fitness)
     plt.savefig(f"project/solutions/ClimberEvol/Simu{nb_sim}/ClimberEvolution.png")

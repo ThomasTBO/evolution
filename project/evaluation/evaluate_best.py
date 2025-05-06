@@ -44,10 +44,12 @@ def best_thrower():
     create_gif_cma(name=name, max_steps=500)
 
 def best_climber():
-    name = "project/evaluation/data/BestClimber"
+    name = "project/evaluation/data/Climber/Climber1"
+    create_gif_cma(name=name, max_steps=500)
+    name = "project/evaluation/data/Climber/Climber2"
     create_gif_cma(name=name, max_steps=500)
 
 if __name__ == "__main__":
     #best_walker()
-    best_thrower()
-    #best_climber()  
+    #best_thrower()
+    best_climber()  
